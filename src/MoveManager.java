@@ -66,6 +66,10 @@ public class MoveManager {
         System.out.println("Invalid move!");
         return null;
     }
+    public void resign(){
+        CommandManager commandManager = new CommandManager();
+        commandManager.send("resign");
+    }
 }
 
 class Pair<T, K> {

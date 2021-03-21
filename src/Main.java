@@ -33,5 +33,11 @@ public class Main {
                 System.exit(0);
             }
         });
+        commandManager.commands.addCommand("new", new RunnableFunction() {
+            @Override
+            public void run(String response) {
+                ChessBoard.getInstance().resetBoard();
+            }
+        });
     }
 }
