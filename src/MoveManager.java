@@ -1,14 +1,14 @@
+import java.util.ArrayList;
+
 public class MoveManager {
     String botSide, movingNowSide;
     boolean paused;
-    String lastMove;
     private static MoveManager instance = null;
 
     private MoveManager() {
         botSide = "BLACK";
         movingNowSide = "WHITE";
         paused = false;
-        lastMove = "";
     }
 
     public static MoveManager getInstance() {
@@ -49,12 +49,8 @@ public class MoveManager {
      * @param move - move received to be updated in the board
      */
     public void receiveMove(String move) {
-        lastMove = move;
-
         updateBoard(move);
-
         nextMoveSide();
-
         if (!paused)
             sendMove();
     }
@@ -63,11 +59,44 @@ public class MoveManager {
      * Generates the best move, updates the board and then sends the move
      */
     public void sendMove() {
-        String nextMove = mirrorMove(lastMove);
-        nextMove = updateBoard(nextMove);
-        CommandManager.getInstance().send("move " + nextMove);
+        String nextMove = pawnMove();
 
-        nextMoveSide();
+        if (nextMove == null)
+            resign();
+        else {
+            updateBoard(nextMove);
+            CommandManager.getInstance().send("move " + nextMove);
+            nextMoveSide();
+        }
+    }
+
+    /**
+     * Function that computes a pawn move.
+     * @return - string representing the move.
+     */
+    public String pawnMove() {
+        Piece[][] board = ChessBoard.getInstance().getBoard();
+        ArrayList<Piece> pawns = new ArrayList<>();
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++)
+                if (board[j][i] != null && board[j][i].getClass().getName().equalsIgnoreCase("PAWN") &&
+                        board[j][i].getColor().equalsIgnoreCase(botSide) && board[j][i].getPossibleMoves().size() != 0)
+                    pawns.add(board[j][i]);
+        }
+
+        if (pawns.size() != 0) {
+            Pair<Integer, Integer> startPos = pawns.get(0).getCurrentPosition();
+            Pair<Integer, Integer> endPos = pawns.get(0).getPossibleMoves().get(0);
+            String move = IntToStringCoordinate(startPos) + IntToStringCoordinate(endPos);
+
+            if (botSide.equalsIgnoreCase("BLACK") && endPos.getFirst() == 7)
+                move += "q";
+            else if (botSide.equalsIgnoreCase("WHITE") && endPos.getFirst() == 0)
+                move += "q";
+            return move;
+        }
+        return null;
     }
 
     /**
@@ -83,9 +112,8 @@ public class MoveManager {
     /**
      * Function that updates the board and promotes a pawn if needed
      * @param move - update the board with the given move
-     * @return move provided + "q" if the pawn is promoted
      */
-    private String updateBoard(String move) {
+    private void updateBoard(String move) {
         Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> coordinates = getCoordinates(move);
 
         // Move piece on ChessBoard
@@ -115,19 +143,6 @@ public class MoveManager {
                     break;
             }
         }
-        else if (piece.getClass().getName().equalsIgnoreCase("Pawn")) {
-            if (piece.getColor().equalsIgnoreCase("BLACK") && getCoordinates(move).getSecond().getFirst() == 7) {
-                ((Pawn) piece).promote("QUEEN");
-                return move + "q";
-            }
-            else if (piece.getColor().equalsIgnoreCase("WHITE") && getCoordinates(move).getSecond().getFirst() == 0) {
-                ((Pawn) piece).promote("QUEEN");
-                return move + "q";
-            }
-
-        }
-
-        return move;
     }
 
     /**
