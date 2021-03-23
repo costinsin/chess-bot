@@ -13,6 +13,13 @@ public abstract class Piece {
     public abstract ArrayList<Pair<Integer, Integer>> getPossibleMoves();
     public abstract boolean isValidMove(Pair<Integer, Integer> move);
 
+    public void moveTo(Pair<Integer, Integer> destination) {
+        ChessBoard chessboard = ChessBoard.getInstance();
+        chessboard.removePiece(this.currentPosition);
+        chessboard.addPiece(destination, this);
+        this.currentPosition = destination;
+    }
+
     public Pair<Integer, Integer> getCurrentPosition() {
         return currentPosition;
     }

@@ -122,6 +122,12 @@ public class Pawn extends Piece{
     }
 
     @Override
+    public void moveTo(Pair<Integer, Integer> destination) {
+        super.moveTo(destination);
+        setMadeFirstMove(true);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

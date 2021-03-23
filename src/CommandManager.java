@@ -6,11 +6,18 @@ public class CommandManager {
     String log;
     Scanner scanner;
     Commands commands;
+    private static CommandManager instance = null;
 
-    public CommandManager() {
+    private CommandManager() {
         log = "";
         scanner = new Scanner(System.in);
         commands = new Commands();
+    }
+
+    public static CommandManager getInstance() {
+        if (instance == null)
+            instance = new CommandManager();
+        return instance;
     }
 
     public void send(String commandMessage) {
