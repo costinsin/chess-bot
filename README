@@ -1,0 +1,20 @@
+-------------------------------------------------Etapa 1, Chessmate team------------------------------------------------
+
+    In aceasta etapa a trebuit sa implementam intern reprezentarea unei table de sah si a pieselor de joc ale acesteia,
+precum si legatura cu programul XBoard. Pentru a realiza aceasta comunicare intre bot si XBoard am creat clasa
+CommandManager care interpreteaza comenzile date de catre utilizator, iar mai departe le prelucreaza in functie de
+cerintele aferente fiecareia. De asemenea am creat clasa ChessBoard in care se construieste o tabla de sah, la nivel
+intern, avand in prima instanta toate piesele aflate pe pozitia lor de start. Fiecare piesa (King, Queen, Rook, Bishop,
+Knight, Pawn) corespunde unei clase care mosteneste clasa abstracta Piece, in care se verifica daca o mutare este valida
+pentru piesa respectiva si care implementeaza executia unei mutari valide. In plus, am creat clasa MoveManager care
+implementeaza anumite functii folosite de XBoard (new, force, go, resign si move), acestea fiind apelate in momemtul
+trimiterii unei comenzi catre CommandManager.
+
+    In ceea ce priveste miscarea pionilor botului, se pleaca initial cu un singur pion care inainteaza cat de mult
+posibil (atata timp cat mai exista mutari valide) si care daca in calea sa intalneste o piesa a adversarului aflata
+intr-o pozitie din care poate fi capturata, acesta o va lua. De asemenea daca unul din pioni reuseste sa ajunga la
+capatul tablei acesta se va transforma automat in dama (regina). Cand pionul pe care botul incerca sa il mute ramane
+fara miscari valide sau ajunge sa fie transformat in regina, botul va incepe miscarea urmatorului pion al sau. In cazul
+in care nu mai exista pioni cu mutari valide se va apela comanda resign.
+
+-------------------------------------------------Etapa 1, Chessmate team------------------------------------------------
