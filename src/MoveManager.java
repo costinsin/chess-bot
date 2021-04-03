@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MoveManager {
     String botSide, movingNowSide;
@@ -22,7 +23,7 @@ public class MoveManager {
      */
     public void nextMoveSide() {
         if (movingNowSide.equalsIgnoreCase("WHITE"))
-            movingNowSide =  "BLACK";
+            movingNowSide = "BLACK";
         else if (movingNowSide.equalsIgnoreCase("BLACK"))
             movingNowSide = "WHITE";
     }
@@ -46,6 +47,7 @@ public class MoveManager {
 
     /**
      * Function that receives a move, updates the board and sends a response if the bot is not paused
+     *
      * @param move - move received to be updated in the board
      */
     public void receiveMove(String move) {
@@ -72,6 +74,7 @@ public class MoveManager {
 
     /**
      * Function that computes a pawn move.
+     *
      * @return - string representing the move.
      */
     public String pawnMove() {
@@ -111,6 +114,7 @@ public class MoveManager {
 
     /**
      * Function that updates the board and promotes a pawn if needed
+     *
      * @param move - update the board with the given move
      */
     private void updateBoard(String move) {
@@ -249,5 +253,18 @@ class Pair<T, K> {
 
     public K getSecond() {
         return second;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }
