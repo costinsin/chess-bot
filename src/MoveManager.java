@@ -61,7 +61,7 @@ public class MoveManager {
      * Generates the best move, updates the board and then sends the move
      */
     public void sendMove() {
-        String nextMove = pawnMove();
+        String nextMove = piecesMove();
 
         if (nextMove == null)
             resign();
@@ -73,34 +73,39 @@ public class MoveManager {
     }
 
     /**
-     * Function that computes a pawn move.
+     * Function that computes piece move.
      *
      * @return - string representing the move.
      */
-    public String pawnMove() {
+    public String piecesMove() {
         Piece[][] board = ChessBoard.getInstance().getBoard();
-        ArrayList<Piece> pawns = new ArrayList<>();
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        ArrayList<Piece> pieces = new ArrayList<>();
 
         for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++)
-                if (board[j][i] != null && board[j][i].getClass().getName().equalsIgnoreCase("PAWN") &&
-                        board[j][i].getColor().equalsIgnoreCase(botSide) && board[j][i].getPossibleMoves().size() != 0)
-                    pawns.add(board[j][i]);
+            for (int j = 0; j < board.length; j++) {
+                if (board[j][i] != null && board[j][i].getColor().equalsIgnoreCase(botSide)
+                        && board[j][i].getPossibleMoves() != null && board[j][i].getPossibleMoves().size() != 0)
+                    pieces.add(board[j][i]);
+            }
         }
 
-        if (pawns.size() != 0) {
-            Pair<Integer, Integer> startPos = pawns.get(0).getCurrentPosition();
-            Pair<Integer, Integer> endPos = pawns.get(0).getPossibleMoves().get(0);
+        if (pieces.size() != 0) {
+            Pair<Integer, Integer> startPos = pieces.get(0).getCurrentPosition();
+            Pair<Integer, Integer> endPos = pieces.get(0).getPossibleMoves().get(0);
             String move = IntToStringCoordinate(startPos) + IntToStringCoordinate(endPos);
 
-            if (botSide.equalsIgnoreCase("BLACK") && endPos.getFirst() == 7)
-                move += "q";
-            else if (botSide.equalsIgnoreCase("WHITE") && endPos.getFirst() == 0)
-                move += "q";
+            if (chessBoard.getPiece(startPos).getClass().getName().equalsIgnoreCase("PAWN")) {
+                if (botSide.equalsIgnoreCase("BLACK") && endPos.getFirst() == 7)
+                    move += "q";
+                else if (botSide.equalsIgnoreCase("WHITE") && endPos.getFirst() == 0)
+                    move += "q";
+            }
             return move;
         }
         return null;
     }
+
 
     /**
      * Function that resets the game
