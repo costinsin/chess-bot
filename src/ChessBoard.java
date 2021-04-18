@@ -12,6 +12,11 @@ public class ChessBoard {
     private ArrayList<Pair<Pair<Integer, Integer>, Pair<Integer, Integer>>> whiteMoves;
     private ArrayList<Pair<Pair<Integer, Integer>, Pair<Integer, Integer>>> blackMoves;
 
+    /**
+     * Reference of the kings.
+     */
+    private King blackKing;
+    private King whiteKing;
 
     private ChessBoard() {
         resetBoard();
@@ -65,6 +70,11 @@ public class ChessBoard {
         //KING
         board[0][4] = new King(new Pair<>(0, 4), "BLACK");
         board[7][4] = new King(new Pair<>(7, 4), "WHITE");
+
+        //Reference to the kings
+        blackKing = (King)board[0][4];
+        whiteKing = (King)board[7][4];
+
     }
 
     /**
