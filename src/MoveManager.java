@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class MoveManager {
     String botSide, movingNowSide;
@@ -91,8 +92,12 @@ public class MoveManager {
         }
 
         if (pieces.size() != 0) {
-            Pair<Integer, Integer> startPos = pieces.get(0).getCurrentPosition();
-            Pair<Integer, Integer> endPos = pieces.get(0).getPossibleMoves().get(0);
+            Random rand = new Random();
+            int randomPiece = rand.nextInt(pieces.size());
+            int randomMove = rand.nextInt(pieces.get(randomPiece).getPossibleMoves().size());
+
+            Pair<Integer, Integer> startPos = pieces.get(randomPiece).getCurrentPosition();
+            Pair<Integer, Integer> endPos = pieces.get(randomPiece).getPossibleMoves().get(randomMove);
             String move = IntToStringCoordinate(startPos) + IntToStringCoordinate(endPos);
 
             if (chessBoard.getPiece(startPos).getClass().getName().equalsIgnoreCase("PAWN")) {

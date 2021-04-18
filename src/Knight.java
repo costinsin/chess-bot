@@ -66,20 +66,4 @@ public class Knight extends Piece {
         }
         return false;
     }
-
-    /**
-     * Generates a move from piece initial position.
-     *
-     * @param i - how much to add to x index;
-     * @param j - how much to add to y index;
-     * @return - a pair of 2 indices
-     */
-    public Pair<Integer, Integer> generateMove(Integer i, Integer j) {
-        return new Pair<>(getCurrentPosition().getFirst() + i,
-                getCurrentPosition().getSecond() + j);
-    }
-
-    public void moveTo(Pair<Integer, Integer> destination) {
-        super.moveTo(destination);
-    }
 }
