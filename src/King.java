@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class King extends Piece{
     public King(Pair<Integer, Integer> currentPosition, String color) {
@@ -6,7 +6,7 @@ public class King extends Piece{
     }
 
     @Override
-    public ArrayList<Pair<Integer, Integer>> getPossibleMoves() {
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
         return null;
     }
 
