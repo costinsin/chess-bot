@@ -1,6 +1,3 @@
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-=======
 import java.util.LinkedList;
 
 public class King extends Piece {
@@ -165,10 +162,6 @@ public class King extends Piece {
         }
 
         return false;
-=======
-    @Override
-    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
-        return null;
     }
 
     /**
@@ -191,17 +184,17 @@ public class King extends Piece {
      * @param signX - int value which can be 1, 0, -1
      * @param signY - int value which can be 1, 0, -1
      */
-    public void addSideMoves(ArrayList<Pair<Integer, Integer>> moves, Integer signX, Integer signY) {
+    public void addSideMoves(LinkedList<Pair<Integer, Integer>> moves, Integer signX, Integer signY) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         if (isValidMove(generateMove(signX, signY))) {
             if (!isChecked(generateMove(signX, signY))) {
                 if (chessBoard.getPiece(generateMove(signX, signY)) != null) {
                     if (!chessBoard.getPiece(generateMove(signX, signY)).getColor().equalsIgnoreCase(getColor())) {
-                        moves.add(generateMove(signX, signY));
+                        moves.addFirst(generateMove(signX, signY));
                     }
                 } else {
-                    moves.add(generateMove(signX, signY));
+                    moves.addLast(generateMove(signX, signY));
                 }
             }
         }
@@ -212,8 +205,8 @@ public class King extends Piece {
      *
      * @return - array of moves represented by a pair of Integer coordinates.
      */
-    public ArrayList<Pair<Integer, Integer>> getPossibleMoves() {
-        ArrayList<Pair<Integer, Integer>> moves = new ArrayList<>();
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
+        LinkedList<Pair<Integer, Integer>> moves = new LinkedList<>();
 
         // LEFT
         addSideMoves(moves, 0, -1);
