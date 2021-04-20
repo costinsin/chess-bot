@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class Pawn extends Piece {
@@ -21,8 +21,8 @@ public class Pawn extends Piece {
      * @return - array of moves represented by a pair of Integer coordinates.
      */
     @Override
-    public ArrayList<Pair<Integer, Integer>> getPossibleMoves() {
-        ArrayList<Pair<Integer, Integer>> possibleMoves = new ArrayList<>();
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
+        LinkedList<Pair<Integer, Integer>> possibleMoves = new LinkedList<>();
         ChessBoard chessBoard = ChessBoard.getInstance();
         Pair<Integer, Integer> oneStep, leftStep, rightStep;
         Pair<Integer, Integer> twoStep = new Pair<>(-1, -1);
@@ -100,15 +100,16 @@ public class Pawn extends Piece {
         }
 
         if (enPassant.getFirst() != -1 && enPassant.getSecond() != -1)
-            possibleMoves.add(enPassant);
+            possibleMoves.addFirst(enPassant);
         if (isValidMove(twoStep))
-            possibleMoves.add(twoStep);
+            possibleMoves.addLast(twoStep);
         if (isValidMove(leftStep))
-            possibleMoves.add(leftStep);
+            possibleMoves.addFirst(leftStep);
         if (isValidMove(rightStep))
-            possibleMoves.add(rightStep);
+            possibleMoves.addFirst(rightStep);
         if (isValidMove(oneStep))
-            possibleMoves.add(oneStep);
+            possibleMoves.addLast(oneStep);
+
         return possibleMoves;
     }
 

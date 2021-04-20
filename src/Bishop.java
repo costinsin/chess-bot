@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Bishop extends Piece{
     public Bishop(Pair<Integer, Integer> currentPosition, String color) {
@@ -6,8 +6,8 @@ public class Bishop extends Piece{
     }
 
     @Override
-    public ArrayList<Pair<Integer, Integer>> getPossibleMoves() {
-        ArrayList<Pair<Integer, Integer>> moves = new ArrayList<>();
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
+        LinkedList<Pair<Integer, Integer>> moves = new LinkedList<>();
 
         // Upper Right Diagonal
         addSideMoves(moves, -1, 1);
@@ -44,7 +44,7 @@ public class Bishop extends Piece{
      * @param signX - int value which can be 1, 0, -1
      * @param signY - int value which can be 1, 0, -1
      */
-    public void addSideMoves(ArrayList<Pair<Integer, Integer>> moves, Integer signX, Integer signY) {
+    public void addSideMoves(LinkedList<Pair<Integer, Integer>> moves, Integer signX, Integer signY) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         for (int i = 1; i <= 8; i++) {
@@ -52,12 +52,12 @@ public class Bishop extends Piece{
                 if (chessBoard.getPiece(generateMove(signX * i, signY * i)) != null) {
                     if (!chessBoard.getPiece(generateMove(signX * i, signY * i)).getColor()
                             .equalsIgnoreCase(getColor())) {
-                        moves.add(generateMove(signX * i, signY * i));
+                        moves.addFirst(generateMove(signX * i, signY * i));
                     }
                     break;
 
                 } else {
-                    moves.add(generateMove(signX * i, signY * i));
+                    moves.addLast(generateMove(signX * i, signY * i));
                 }
             } else {
                 break;

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -74,6 +75,37 @@ public class MoveManager {
     }
 
     /**
+     * Function that checks if a piece has a take move and prioritize it
+     *
+     * @param pieces - LinkedList of pieces
+     * @param moves - Linked list of possible moves of piece parameter
+     * @param piece - the piece that we will add in pieces list
+     * @return - true ( if the piece has a take move) or false (otherwise)
+     */
+    private boolean prioritizePiece(LinkedList<Piece> pieces, LinkedList<Pair<Integer, Integer>> moves, Piece piece) {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+
+        if (!piece.getClass().getName().equalsIgnoreCase("PAWN")) {
+            for (Pair<Integer, Integer> move : moves)
+                if (chessBoard.getPiece(move) != null) {
+                    pieces.addFirst(piece);
+                    return true;
+                }
+            pieces.addLast(piece);
+
+        } else {
+            for (Pair<Integer, Integer> move : moves)
+                if (!piece.getCurrentPosition().getSecond().equals(move.getSecond())) {
+                    pieces.addFirst(piece);
+                    return true;
+                }
+            pieces.addLast(piece);
+        }
+
+        return false;
+    }
+
+    /**
      * Function that computes piece move.
      *
      * @return - string representing the move.
@@ -81,23 +113,41 @@ public class MoveManager {
     public String piecesMove() {
         Piece[][] board = ChessBoard.getInstance().getBoard();
         ChessBoard chessBoard = ChessBoard.getInstance();
-        ArrayList<Piece> pieces = new ArrayList<>();
+        LinkedList<Piece> pieces = new LinkedList<>();
+        boolean isTakePieceMove = false;
 
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (board[j][i] != null && board[j][i].getColor().equalsIgnoreCase(botSide)
-                        && board[j][i].getPossibleMoves() != null && board[j][i].getPossibleMoves().size() != 0)
-                    pieces.add(board[j][i]);
+        for (int i = 0; i < board.length && !isTakePieceMove; i++) {
+            for (int j = 0; j < board.length && !isTakePieceMove; j++) {
+                if (board[j][i] != null && board[j][i].getColor().equalsIgnoreCase(botSide)) {
+                    LinkedList<Pair<Integer, Integer>> possibleMoves = board[j][i].getPossibleMoves();
+                    boolean check = false;
+                    if (possibleMoves != null && possibleMoves.size() != 0)
+                        check = prioritizePiece(pieces, possibleMoves, board[j][i]);
+                    if (check)
+                        isTakePieceMove = true;
+                }
             }
         }
 
         if (pieces.size() != 0) {
-            Random rand = new Random();
-            int randomPiece = rand.nextInt(pieces.size());
-            int randomMove = rand.nextInt(pieces.get(randomPiece).getPossibleMoves().size());
+            Pair<Integer, Integer> startPos;
+            Pair<Integer, Integer> endPos;
 
-            Pair<Integer, Integer> startPos = pieces.get(randomPiece).getCurrentPosition();
-            Pair<Integer, Integer> endPos = pieces.get(randomPiece).getPossibleMoves().get(randomMove);
+            // if exist a take move on the board
+            if (isTakePieceMove) {
+                startPos = pieces.get(0).getCurrentPosition();
+                endPos = pieces.get(0).getPossibleMoves().get(0);
+            } else {
+
+                // else we take a random piece and a random move.
+                Random rand = new Random();
+                int randomPiece = rand.nextInt(pieces.size());
+                LinkedList<Pair<Integer, Integer>> possibleMoves = pieces.get(randomPiece).getPossibleMoves();
+                int randomMove = rand.nextInt(possibleMoves.size());
+
+                startPos = pieces.get(randomPiece).getCurrentPosition();
+                endPos = possibleMoves.get(randomMove);
+            }
             String move = IntToStringCoordinate(startPos) + IntToStringCoordinate(endPos);
 
             if (chessBoard.getPiece(startPos).getClass().getName().equalsIgnoreCase("PAWN")) {

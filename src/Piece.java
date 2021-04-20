@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public abstract class Piece {
@@ -10,7 +10,7 @@ public abstract class Piece {
         this.color = color;
     }
 
-    public abstract ArrayList<Pair<Integer, Integer>> getPossibleMoves();
+    public abstract LinkedList<Pair<Integer, Integer>> getPossibleMoves();
     public abstract boolean isValidMove(Pair<Integer, Integer> move);
 
     /**

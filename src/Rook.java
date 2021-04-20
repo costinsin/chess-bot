@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Rook extends Piece {
 
@@ -18,18 +18,18 @@ public class Rook extends Piece {
                 && move.getSecond() >= 0 && move.getSecond() <= 7;
     }
 
-    public void addSideMoves(ArrayList<Pair<Integer, Integer>> moves, Integer OX, Integer OY) {
+    public void addSideMoves(LinkedList<Pair<Integer, Integer>> moves, Integer OX, Integer OY) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         for (int i = 1; i <= 8; i++) {
             if (isValidMove(generateMove(OX * i, OY * i))) {
                 if (chessBoard.getPiece(generateMove(OX * i, OY * i)) != null) {
                     if (!chessBoard.getPiece(generateMove(OX * i, OY * i)).getColor().equalsIgnoreCase(getColor())) {
-                        moves.add(generateMove(OX * i, OY * i));
+                        moves.addFirst(generateMove(OX * i, OY * i));
                     }
                     break;
                 } else {
-                    moves.add(generateMove(OX * i, OY * i));
+                    moves.addLast(generateMove(OX * i, OY * i));
                 }
             } else {
                 break;
@@ -43,18 +43,19 @@ public class Rook extends Piece {
      * @return-array of moves represented by a pair of Integer coordinates
      */
     @Override
-    public ArrayList<Pair<Integer, Integer>> getPossibleMoves() {
-        ArrayList<Pair<Integer, Integer>> moves = new ArrayList<>();
-        //left
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
+        LinkedList<Pair<Integer, Integer>> moves = new LinkedList<>();
+
+        // left
         addSideMoves(moves, 0, -1);
 
-        //right
+        // right
         addSideMoves(moves, 0, 1);
 
-        //up
+        // up
         addSideMoves(moves, -1, 0);
 
-        //down
+        // down
         addSideMoves(moves, 1, 0);
 
         return moves;

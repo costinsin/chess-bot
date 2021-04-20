@@ -1,5 +1,7 @@
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+=======
+import java.util.LinkedList;
 
 public class King extends Piece {
     public King(Pair<Integer, Integer> currentPosition, String color) {
@@ -163,6 +165,10 @@ public class King extends Piece {
         }
 
         return false;
+=======
+    @Override
+    public LinkedList<Pair<Integer, Integer>> getPossibleMoves() {
+        return null;
     }
 
     /**
