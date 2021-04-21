@@ -47,7 +47,7 @@ public class Knight extends Piece {
     public void prioritization(LinkedList<Pair<Integer, Integer>> result, Pair<Integer, Integer> move) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
-        if (isValidMove(move)) {
+        if (isValidMove(move) && !isKingCheckedAfterTempMove(move)) {
             if (chessBoard.getPiece(move) != null)
                 result.addFirst(move);
             else

@@ -25,6 +25,39 @@ public abstract class Piece {
                 getCurrentPosition().getSecond() + j);
     }
 
+    /**
+     * Function that move the piece temporary to destination and verify if king is checked.
+     * @param destination - pair of x, y coordinates which represent the place where we want
+     *                    to move the piece.
+     * @return - true(if the destination is a valid move), false(otherwise).
+     */
+    public boolean isKingCheckedAfterTempMove(Pair<Integer, Integer> destination) {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        boolean isNotValid;
+        Piece saveStart = this;
+        Piece saveDest = chessBoard.getPiece(destination);
+        Pair<Integer, Integer> saveStartPos = saveStart.currentPosition;
+
+
+        // temporary move
+        chessBoard.addPiece(destination, saveStart);
+        chessBoard.removePiece(saveStart.getCurrentPosition());
+        saveStart.setCurrentPosition(destination);
+
+        // check for King check
+        if (saveStart.getColor().equalsIgnoreCase("WHITE")) {
+            isNotValid = chessBoard.getWhiteKing().isChecked();
+        } else {
+            isNotValid = chessBoard.getBlackKing().isChecked();
+        }
+
+        // revert changes
+        chessBoard.addPiece(destination, saveDest);
+        chessBoard.addPiece(saveStartPos, saveStart);
+        saveStart.setCurrentPosition(saveStartPos);
+        return isNotValid;
+    }
+
     public void moveTo(Pair<Integer, Integer> destination) {
         ChessBoard chessboard = ChessBoard.getInstance();
         chessboard.removePiece(this.currentPosition);

@@ -91,7 +91,6 @@ public class MoveManager {
                     pieces.addFirst(piece);
                     return true;
                 }
-            pieces.addLast(piece);
 
         } else {
             for (Pair<Integer, Integer> move : moves)
@@ -99,8 +98,8 @@ public class MoveManager {
                     pieces.addFirst(piece);
                     return true;
                 }
-            pieces.addLast(piece);
         }
+        pieces.addLast(piece);
 
         return false;
     }

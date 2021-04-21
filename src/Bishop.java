@@ -48,7 +48,8 @@ public class Bishop extends Piece{
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         for (int i = 1; i <= 8; i++) {
-            if (isValidMove(generateMove(signX * i, signY * i))) {
+            if (isValidMove(generateMove(signX * i, signY * i))
+                    && !isKingCheckedAfterTempMove(generateMove(signX * i, signY * i))) {
                 if (chessBoard.getPiece(generateMove(signX * i, signY * i)) != null) {
                     if (!chessBoard.getPiece(generateMove(signX * i, signY * i)).getColor()
                             .equalsIgnoreCase(getColor())) {

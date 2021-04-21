@@ -99,15 +99,15 @@ public class Pawn extends Piece {
             oneStep = generateMove(-1, 0);
         }
 
-        if (enPassant.getFirst() != -1 && enPassant.getSecond() != -1)
+        if (enPassant.getFirst() != -1 && enPassant.getSecond() != -1 && !isKingCheckedAfterTempMove(enPassant))
             possibleMoves.addFirst(enPassant);
-        if (isValidMove(twoStep))
+        if (isValidMove(twoStep) && !isKingCheckedAfterTempMove(twoStep))
             possibleMoves.addLast(twoStep);
-        if (isValidMove(leftStep))
+        if (isValidMove(leftStep) && !isKingCheckedAfterTempMove(leftStep))
             possibleMoves.addFirst(leftStep);
-        if (isValidMove(rightStep))
+        if (isValidMove(rightStep) && !isKingCheckedAfterTempMove(rightStep))
             possibleMoves.addFirst(rightStep);
-        if (isValidMove(oneStep))
+        if (isValidMove(oneStep) && !isKingCheckedAfterTempMove(oneStep))
             possibleMoves.addLast(oneStep);
 
         return possibleMoves;

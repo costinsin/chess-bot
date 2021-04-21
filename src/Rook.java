@@ -22,7 +22,8 @@ public class Rook extends Piece {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         for (int i = 1; i <= 8; i++) {
-            if (isValidMove(generateMove(OX * i, OY * i))) {
+            if (isValidMove(generateMove(OX * i, OY * i))
+                    && !isKingCheckedAfterTempMove(generateMove(OX * i, OY * i))) {
                 if (chessBoard.getPiece(generateMove(OX * i, OY * i)) != null) {
                     if (!chessBoard.getPiece(generateMove(OX * i, OY * i)).getColor().equalsIgnoreCase(getColor())) {
                         moves.addFirst(generateMove(OX * i, OY * i));

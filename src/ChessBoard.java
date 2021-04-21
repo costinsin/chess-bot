@@ -18,6 +18,14 @@ public class ChessBoard {
     private King blackKing;
     private King whiteKing;
 
+    public King getBlackKing() {
+        return blackKing;
+    }
+
+    public King getWhiteKing() {
+        return whiteKing;
+    }
+
     private ChessBoard() {
         resetBoard();
     }

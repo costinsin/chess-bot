@@ -165,6 +165,13 @@ public class King extends Piece {
     }
 
     /**
+     * Overloaded public boolean isChecked(Pair<Integer, Integer> move).
+     */
+    public boolean isChecked() {
+        return isChecked(this.getCurrentPosition());
+    }
+
+    /**
      * Function checks if the move coordinates are inside the board size.
      *
      * @param move - pair of x and y coordinates
@@ -187,15 +194,13 @@ public class King extends Piece {
     public void addSideMoves(LinkedList<Pair<Integer, Integer>> moves, Integer signX, Integer signY) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
-        if (isValidMove(generateMove(signX, signY))) {
-            if (!isChecked(generateMove(signX, signY))) {
-                if (chessBoard.getPiece(generateMove(signX, signY)) != null) {
-                    if (!chessBoard.getPiece(generateMove(signX, signY)).getColor().equalsIgnoreCase(getColor())) {
-                        moves.addFirst(generateMove(signX, signY));
-                    }
-                } else {
-                    moves.addLast(generateMove(signX, signY));
+        if (isValidMove(generateMove(signX, signY)) && !isKingCheckedAfterTempMove(generateMove(signX, signY))) {
+            if (chessBoard.getPiece(generateMove(signX, signY)) != null) {
+                if (!chessBoard.getPiece(generateMove(signX, signY)).getColor().equalsIgnoreCase(getColor())) {
+                    moves.addFirst(generateMove(signX, signY));
                 }
+            } else {
+                moves.addLast(generateMove(signX, signY));
             }
         }
     }
