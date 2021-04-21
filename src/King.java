@@ -32,7 +32,8 @@ public class King extends Piece {
                             if (piece.equalsIgnoreCase("KING") && distance == 1) {
                                 return false;
                             }
-                            if (piece.equalsIgnoreCase("PAWN") && distance == 1 && signX == 1) {
+                            if (piece.equalsIgnoreCase("PAWN") && distance == 1 &&
+                                    signX == (this.getColor().equalsIgnoreCase("BLACK") ? 1 : -1)) {
                                 return false;
                             }
                         }
@@ -77,7 +78,7 @@ public class King extends Piece {
      * @param position - pair of x and y coordinates
      * @return - true or false
      */
-    public boolean isChecked(Pair<Integer, Integer> position) {
+    private boolean isChecked(Pair<Integer, Integer> position) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
         //LEFT
