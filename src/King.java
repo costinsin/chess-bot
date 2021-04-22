@@ -158,7 +158,7 @@ public class King extends Piece {
             return true;
         }
 
-        if (!freeFromKnights(1, -2, position.getFirst(), position.getSecond())) {
+        if (!freeFromKnights(-1, -2, position.getFirst(), position.getSecond())) {
             return true;
         }
 
