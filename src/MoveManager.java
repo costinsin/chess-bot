@@ -85,19 +85,28 @@ public class MoveManager {
     private boolean prioritizePiece(LinkedList<Piece> pieces, LinkedList<Pair<Integer, Integer>> moves, Piece piece) {
         ChessBoard chessBoard = ChessBoard.getInstance();
 
-        if (!piece.getClass().getName().equalsIgnoreCase("PAWN")) {
+        if (piece.getClass().getName().equalsIgnoreCase("PAWN")){
+            for (Pair<Integer, Integer> move : moves)
+                if (!piece.getCurrentPosition().getSecond().equals(move.getSecond())) {
+                    pieces.addFirst(piece);
+                    return true;
+                }
+        } else if (piece.getClass().getName().equalsIgnoreCase("KING")) {
+            for (Pair<Integer, Integer> move : moves) {
+                // If castling exists, it should be prioritised
+                if (Math.abs(piece.getCurrentPosition().getSecond() - move.getSecond()) == 2 ||
+                        chessBoard.getPiece(move) != null) {
+                    pieces.addFirst(piece);
+                    return true;
+                }
+            }
+        } else {
             for (Pair<Integer, Integer> move : moves)
                 if (chessBoard.getPiece(move) != null) {
                     pieces.addFirst(piece);
                     return true;
                 }
 
-        } else {
-            for (Pair<Integer, Integer> move : moves)
-                if (!piece.getCurrentPosition().getSecond().equals(move.getSecond())) {
-                    pieces.addFirst(piece);
-                    return true;
-                }
         }
         pieces.addLast(piece);
 
@@ -117,7 +126,8 @@ public class MoveManager {
 
         for (int i = 0; i < board.length && !isTakePieceMove; i++) {
             for (int j = 0; j < board.length && !isTakePieceMove; j++) {
-                if (board[j][i] != null && board[j][i].getColor().equalsIgnoreCase(botSide)) {
+                if (board[j][i] != null && board[j][i].getColor().equalsIgnoreCase(botSide) &&
+                        !board[j][i].getClass().getName().equalsIgnoreCase("KING")) {
                     LinkedList<Pair<Integer, Integer>> possibleMoves = board[j][i].getPossibleMoves();
                     boolean check = false;
                     if (possibleMoves != null && possibleMoves.size() != 0)
@@ -126,6 +136,14 @@ public class MoveManager {
                         isTakePieceMove = true;
                 }
             }
+        }
+
+        // Prioritise KING last
+        {
+            LinkedList<Pair<Integer, Integer>> possibleMoves = chessBoard.getKing(botSide).getPossibleMoves();
+            if (possibleMoves != null && possibleMoves.size() != 0)
+                if (prioritizePiece(pieces, possibleMoves, chessBoard.getKing(botSide)))
+                    isTakePieceMove = true;
         }
 
         if (pieces.size() != 0) {
@@ -179,16 +197,37 @@ public class MoveManager {
      */
     private void updateBoard(String move) {
         Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> coordinates = getCoordinates(move);
+        ChessBoard chessBoard = ChessBoard.getInstance();
 
         // Move piece on ChessBoard
-        Piece piece = ChessBoard.getInstance().getPiece(coordinates.getFirst());
+        Piece piece = chessBoard.getPiece(coordinates.getFirst());
         piece.moveTo(coordinates.getSecond());
+
+        // Handle rook update for castling
+        if (piece.getClass().getName().equalsIgnoreCase("KING") &&
+                Math.abs(coordinates.getSecond().getSecond() - coordinates.getFirst().getSecond()) == 2) {
+            Piece rook;
+
+            if (coordinates.getSecond().equals(new Pair<>(0, 6))) {
+                rook = chessBoard.getPiece(new Pair<>(0, 7));
+                rook.moveTo(new Pair<>(0, 5));
+            } else if (coordinates.getSecond().equals(new Pair<>(0, 2))) {
+                rook = chessBoard.getPiece(new Pair<>(0, 0));
+                rook.moveTo(new Pair<>(0, 3));
+            } else if (coordinates.getSecond().equals(new Pair<>(7, 6))) {
+                rook = chessBoard.getPiece(new Pair<>(7, 7));
+                rook.moveTo(new Pair<>(7, 5));
+            } else if (coordinates.getSecond().equals(new Pair<>(7, 2))) {
+                rook = chessBoard.getPiece(new Pair<>(7, 0));
+                rook.moveTo(new Pair<>(7, 3));
+            }
+        }
 
         // Log the move into move history
         if (movingNowSide.equalsIgnoreCase("BLACK"))
-            ChessBoard.getInstance().addBlackMove(coordinates.getFirst(), coordinates.getSecond());
+            chessBoard.addBlackMove(coordinates.getFirst(), coordinates.getSecond());
         else
-            ChessBoard.getInstance().addWhiteMove(coordinates.getFirst(), coordinates.getSecond());
+            chessBoard.addWhiteMove(coordinates.getFirst(), coordinates.getSecond());
 
         // Handle pawn promotion
         if (move.length() == 5) {

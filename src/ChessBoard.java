@@ -26,6 +26,18 @@ public class ChessBoard {
         return whiteKing;
     }
 
+    /**
+     * Function that returns the king of the specified color
+     * @param color - color of the king, could be either BLACK or WHITE
+     * @return - reference to the BLACK/WHITE king
+     */
+    public King getKing(String color) {
+        if (color.equalsIgnoreCase("WHITE"))
+            return whiteKing;
+        else
+            return blackKing;
+    }
+
     private ChessBoard() {
         resetBoard();
     }

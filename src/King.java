@@ -1,8 +1,11 @@
 import java.util.LinkedList;
 
 public class King extends Piece {
+    private boolean wasMoved;
+
     public King(Pair<Integer, Integer> currentPosition, String color) {
         super(currentPosition, color);
+        this.wasMoved = false;
     }
 
     /**
@@ -20,9 +23,7 @@ public class King extends Piece {
 
         while (isValidMove(new Pair<>(xPos, yPos))) {
             if (chessBoard.getPiece(new Pair<>(xPos, yPos)) != null) {
-                if (chessBoard.getPiece(new Pair<>(xPos, yPos)).getColor().equalsIgnoreCase(getColor())) {
-                    return true;
-                } else {
+                if (!chessBoard.getPiece(new Pair<>(xPos, yPos)).getColor().equalsIgnoreCase(getColor())) {
                     for (String piece : pieces) {
                         if (chessBoard.getPiece(new Pair<>(xPos, yPos)).getClass().getName().equalsIgnoreCase(piece)) {
                             if (!piece.equalsIgnoreCase("KING")
@@ -38,8 +39,8 @@ public class King extends Piece {
                             }
                         }
                     }
-                    return true;
                 }
+                return true;
             }
             xPos += signX;
             yPos += signY;
@@ -79,8 +80,6 @@ public class King extends Piece {
      * @return - true or false
      */
     private boolean isChecked(Pair<Integer, Integer> position) {
-        ChessBoard chessBoard = ChessBoard.getInstance();
-
         //LEFT
         if (!freeSide(0, -1, position.getFirst(), position.getSecond() - 1,
                 new String[]{"QUEEN", "ROOK", "KING"})) {
@@ -207,6 +206,75 @@ public class King extends Piece {
     }
 
     /**
+     * Function that checks if a castling move can be done
+     * @param move - position of where the king will be placed after castling
+     * @return true if castling is available, false otherwise
+     */
+    private boolean checkCastling(Pair<Integer, Integer> move) {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+
+        if (move.getSecond() < getCurrentPosition().getSecond()) {
+            for (int i = getCurrentPosition().getSecond() - 1; i >= move.getSecond(); i--) {
+                if (chessBoard.getPiece(new Pair<>(move.getFirst(), i)) != null ||
+                        this.isKingCheckedAfterTempMove(new Pair<>(move.getFirst(), i)))
+                    return false;
+            }
+
+            if (chessBoard.getPiece(new Pair<>(move.getFirst(), move.getSecond() - 1)) != null)
+                return false;
+        } else {
+            for (int i = getCurrentPosition().getSecond() + 1; i <= move.getSecond(); i++) {
+                if (chessBoard.getPiece(new Pair<>(move.getFirst(), i)) != null ||
+                        this.isKingCheckedAfterTempMove(new Pair<>(move.getFirst(), i)))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Function that checks if a position has a Rook available for castling
+     * @param position - position of the piece
+     * @param color - color of the rook
+     * @return true if rook is available, false otherwise
+     */
+    private boolean checkRook(Pair<Integer, Integer> position, String color) {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+
+        return chessBoard.getPiece(position) != null &&
+                chessBoard.getPiece(position).getColor().equalsIgnoreCase(color) &&
+                chessBoard.getPiece(position).getClass().getName().equalsIgnoreCase("ROOK") &&
+                !((Rook) chessBoard.getPiece(position)).wasMoved();
+    }
+
+    /**
+     * Function that adds the short and the long castling if possible to a move array
+     * @param moves - array of moves where the castling moves will be added
+     */
+    public void addCastling(LinkedList<Pair<Integer, Integer>> moves) {
+        Pair<Integer, Integer> shortCastling = null, longCastling = null;
+
+        if (this.getColor().equalsIgnoreCase("BLACK")) {
+            if (checkRook(new Pair<>(0, 7), "BLACK"))
+                shortCastling = new Pair<>(0, 6);
+            if (checkRook(new Pair<>(0, 0), "BLACK"))
+                longCastling = new Pair<>(0, 2);
+        } else {
+            if (checkRook(new Pair<>(7, 7), "WHITE"))
+                shortCastling = new Pair<>(7, 6);
+            if (checkRook(new Pair<>(7, 0), "WHITE"))
+                longCastling = new Pair<>(7, 2);
+        }
+
+        if (shortCastling != null && checkCastling(shortCastling)) {
+            moves.addFirst(shortCastling);
+        }
+        if (longCastling != null && checkCastling(longCastling)) {
+            moves.addFirst(longCastling);
+        }
+    }
+
+    /**
      * Function that creates and returns an array of possible and valid moves.
      *
      * @return - array of moves represented by a pair of Integer coordinates.
@@ -238,6 +306,15 @@ public class King extends Piece {
         // LOWER RIGHT DIAG
         addSideMoves(moves, 1, 1);
 
+        if (!this.isChecked() && !this.wasMoved)
+            addCastling(moves);
+
         return moves;
+    }
+
+    @Override
+    public void moveTo(Pair<Integer, Integer> destination) {
+        super.moveTo(destination);
+        this.wasMoved = true;
     }
 }

@@ -1,9 +1,11 @@
 import java.util.LinkedList;
 
 public class Rook extends Piece {
+    private boolean wasMoved;
 
     public Rook(Pair<Integer, Integer> currentPosition, String color) {
         super(currentPosition, color);
+        this.wasMoved = false;
     }
 
     /**
@@ -60,6 +62,16 @@ public class Rook extends Piece {
         addSideMoves(moves, 1, 0);
 
         return moves;
+    }
+
+    public boolean wasMoved() {
+        return wasMoved;
+    }
+
+    @Override
+    public void moveTo(Pair<Integer, Integer> destination) {
+        super.moveTo(destination);
+        this.wasMoved = true;
     }
 }
 
