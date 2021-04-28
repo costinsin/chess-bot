@@ -17,4 +17,27 @@ capatul tablei acesta se va transforma automat in dama (regina). Cand pionul pe 
 fara miscari valide sau ajunge sa fie transformat in regina, botul va incepe miscarea urmatorului pion al sau. In cazul
 in care nu mai exista pioni cu mutari valide se va apela comanda resign.
 
--------------------------------------------------Etapa 1, Chessmate team------------------------------------------------
+-------------------------------------------------Etapa 2, Chessmate team------------------------------------------------
+
+     In aceasta etapa a trebuit sa dezvoltam implementarea de la etapa anterioara astfel incat programul sa fie capabil
+sa joace un joc de sah complet.
+    Pentru ca botul sa fie capabil sa primeasca mutari, sa-si actualizeze tabla si sa raspunda cu alta mutare a fost
+necesar ca in clasa fiecarei piese sa se verifice mutarile valide cu ajutorul functiei isValidMove() si sa se genereze
+toate mutarile posibile si valide cu ajutorul functiei getPossibleMoves().
+    In cazul in care se primeste sah, botul este capabil sa se apere si sa nu faca mutari invalide. In clasa King
+exista o metoda care verifica din toate unghiurile daca regele este sau nu in sah, returnand un rezultat boolean.
+Se ia fiecare piesa de culoarea botului si se genereaza toate mutarile valide cu ajutorul functiei getPossibleMoves.
+O miscare este considerata valida doar daca dupa efectuarea acesteia regele nu va fi in sah. Aceasta verificare
+garanteaza ca nu se va efectua o mutare care ar pune regele in sah si se efectueaza doar mutari care scot regele din
+sah. Exista, de asemenea, o prioritizare a mutarilor care iau piesele adversarului si a mutarii care face rocada.
+    Pentru a fi valida rocada trebuie sa se respecte urmatoarele conditii: se verifica daca regele nu este in sah, daca
+nu a fost mutat inainte de momentul actual, daca tura nu a fost mutata inainte de momentul actual, daca regele nu trece
+prin sah pe traseul de rocada si daca regele se afla in sah in noua pozitie dupa rocada. Rocada este de doua tipuri:
+rocada mica, respectiv rocada mare. Atat pentru piesele negre, cat si pentru piesele albe se stabilesc pozitiile in
+care s-ar efectua ambele tipuri de rocade si in functie de conditiile indeplinite se va efectua rocada corespunzatoare.
+Rocada este o mutare mai speciala, implicand mutarea a doua piese pe tabla de joc.
+    In ceea ce priveste pionul s-a adaugat si cazul in care se poate efectua en passant, verificandu-se ca atunci cand
+se muta un pion doua campuri inainte fata de pozitia initiala si trece pe langa un pion adversar poate fi capturat de
+cel adversar ca si cand s-ar fi deplasat doar un camp in fata.
+
+------------------------------------------------------------------------------------------------------------------------
